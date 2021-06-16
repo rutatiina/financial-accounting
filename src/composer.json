@@ -1,0 +1,12 @@
+{
+    "name": "rutatiina/financial-accounting",
+    "description": "features for the Accounting",
+    "type": "laravel",
+    "authors": [
+        {
+            "name": "Rutatiina Gilbert",
+            "email": "rutatiina@ruginem.org"
+        }
+    ],
+    "require": {}
+}
