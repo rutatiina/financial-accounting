@@ -1,0 +1,28 @@
+{
+    "name": "rutatiina/financial-accounting",
+    "description": "Laravel Package to manage financial accounting",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gilbert Rutatiina",
+            "email": "rutatiina@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {
+        "laravel/framework": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rutatiina\\FinancialAccounting\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rutatiina\\FinancialAccounting\\FinancialAccountingServiceProvider"
+            ]
+        }
+    }
+}
