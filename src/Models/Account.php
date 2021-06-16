@@ -33,6 +33,8 @@ class Account extends Model
 
     protected $appends = ['balance'];
 
+    protected $guarded = ['id'];
+
     protected static $currency = 'UGX';
 
     public function __construct(array $attributes = array())
