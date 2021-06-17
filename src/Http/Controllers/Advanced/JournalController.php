@@ -99,11 +99,6 @@ class JournalController extends Controller
         $txnAttributes['totalDebit'] = 0;
         $txnAttributes['totalCredit'] = 0;
 
-        unset($txnAttributes['txn_entree_id']); //!important
-        unset($txnAttributes['txn_type_id']); //!important
-        unset($txnAttributes['debit_contact_id']); //!important
-        unset($txnAttributes['credit_contact_id']); //!important
-
         $data = [
             'pageTitle' => 'Create Journal', #required
             'pageAction' => 'Create', #required

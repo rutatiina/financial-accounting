@@ -51,7 +51,7 @@ class SalesByCustomerController extends Controller
 
             #get total number of invoices per contact
             $invoice_count = Invoice::where(function ($query) use ($contact) {
-                $query->where('debit_contact_id', $contact->id)->orWhere('credit_contact_id', $contact->id);
+                $query->where('contact_id', $contact->id);
             })->count();
 
             $contact->invoice_count = $invoice_count;

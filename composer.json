@@ -11,7 +11,11 @@
     ],
     "minimum-stability": "beta",
     "require": {
-        "laravel/framework": "^8.0"
+        "laravel/framework": "^8.0",
+        "rutatiina/tenant": "*",
+        "rutatiina/tax": "*",
+        "rutatiina/contact": "*",
+        "rutatiina/item": "*"
     },
     "autoload": {
         "psr-4": {

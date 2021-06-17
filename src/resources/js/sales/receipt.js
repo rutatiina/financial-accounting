@@ -565,7 +565,7 @@ rg_receipt = function () {
                                     <td class="text-right">' + rg_number_format(value['total'], rg_decimal_places) + ' ' + value['base_currency'] + '</td>\
                                     <td class="text-right text-semibold">' + rg_number_format(value['balance'], rg_decimal_places) + ' ' + value['base_currency'] + '</td>\
                                     <td class="no-padding-top no-padding-bottom text-right">\
-                                        <input type="hidden" name="items[' + value['id'] + '][txn_contact_id]" value="' + value['debit_contact_id'] + '" >\
+                                        <input type="hidden" name="items[' + value['id'] + '][txn_contact_id]" value="' + value['contact_id'] + '" >\
                                         <input type="hidden" name="items[' + value['id'] + '][txn_number]" value="' + value['number'] + '" >\
                                         <input type="hidden" name="items[' + value['id'] + '][max_receipt_amount]" value="' + value['balance'] + '" class="item_row_max_receipt_amount" >\
                                         <input type="hidden" name="items[' + value['id'] + '][txn_exchange_rate]" value="' + value['exchange_rate'] + '" >\

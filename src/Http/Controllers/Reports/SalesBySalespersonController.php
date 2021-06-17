@@ -67,7 +67,7 @@ class SalesBySalespersonController extends Controller
                 ->where('base_currency', $tenant->base_currency)
                 ->where(function ($query) use ($contact)
                 {
-                    $query->where('debit_contact_id', $contact->id)->orWhere('credit_contact_id', $contact->id);
+                    $query->where('contact_id', $contact->id);
                 })
                 ->groupBy('tenant_id')
                 ->get();
@@ -80,7 +80,7 @@ class SalesBySalespersonController extends Controller
                 ->where('base_currency', $tenant->base_currency)
                 ->where(function ($query) use ($contact)
                 {
-                    $query->where('debit_contact_id', $contact->id)->orWhere('credit_contact_id', $contact->id);
+                    $query->where('contact_id', $contact->id);
                 })
                 ->groupBy('tenant_id')
                 ->get();
