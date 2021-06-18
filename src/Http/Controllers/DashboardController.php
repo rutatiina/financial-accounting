@@ -35,7 +35,7 @@ class DashboardController extends Controller
 	{
 	    $count = Invoice::count();
 	    $pending = Invoice::where('status', 'Pending')->count();
-	    $fullyPaid = Invoice::whereColumn('total', 'total_paid')->count();
+	    $fullyPaid = Invoice::whereColumn('total', '>=', 'total_paid')->count();
 
         if($count) {
             $percentagePaid = ($fullyPaid / $count);
@@ -56,7 +56,7 @@ class DashboardController extends Controller
 	{
         $count = Bill::count();
         $pending = Bill::where('status', 'Pending')->count();
-        $fullyPaid = Bill::whereColumn('total', 'total_paid')->count();
+        $fullyPaid = Bill::whereColumn('total', '>=', 'total_paid')->count();
 
         if($count) {
             $percentagePaid = ($fullyPaid / $count);
