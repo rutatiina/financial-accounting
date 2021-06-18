@@ -6,8 +6,22 @@ use Rutatiina\FinancialAccounting\Models\AccountBalance;
 
 class AccountBalanceUpdateService
 {
-    public static function doubleEntry($ledgers, $reverse = false)
+    public static function doubleEntry($data, $reverse = false)
     {
+        if (is_object($data))
+        {
+            $ledgers = $data->ledgers;
+        }
+        else
+        {
+            $ledgers = $data['ledgers'];
+        }
+
+        if ($reverse && !$data['balances_where_updated'])
+        {
+            return true;
+        }
+
         if ($reverse)
         {
             foreach ($ledgers as &$ledger)
@@ -130,6 +144,11 @@ class AccountBalanceUpdateService
 
     public static function singleEntry($data, $reverse = false)
     {
+        if ($reverse && !$data['balances_where_updated'])
+        {
+            return true;
+        }
+
         //Defaults
         $total = $data['total'];
 
