@@ -4,12 +4,9 @@ namespace Rutatiina\FinancialAccounting\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Rutatiina\RecurringBill\Models\RecurringBillRecurring;
-use Rutatiina\RecurringExpense\Models\RecurringExpenseRecurring;
-use Rutatiina\RecurringInvoice\Models\RecurringInvoiceRecurring;
-use Rutatiina\RecurringInvoice\Classes\Schedule as RecurringInvoiceScheduleClass;
-use Rutatiina\RecurringBill\Classes\Schedule as RecurringBillScheduleClass;
-use Rutatiina\RecurringExpense\Classes\Schedule as RecurringExpenseScheduleClass;
+use Rutatiina\Invoice\Services\RecurringInvoiceScheduleService;
+use Rutatiina\Bill\Services\RecurringBillScheduleService;
+use Rutatiina\Expense\Services\RecurringExpenseSheduleService;
 
 trait Schedule
 {
@@ -50,20 +47,20 @@ trait Schedule
             $tasDayOfMonthNumber = date('j', strtotime($task->created_by)); // j - Day of the month without leading zeros	1 to 31
             $tasMonthNumber = date('n', strtotime($task->created_by)); // n - Numeric representation of a month, without leading zeros	1 through 12
 
-            if ($task instanceof \Rutatiina\RecurringInvoice\Models\RecurringInvoiceRecurring)
+            if ($task instanceof \Rutatiina\Invoice\Models\RecurringInvoice)
             {
-                $call = new RecurringInvoiceScheduleClass($task);
-                //Log::info('This is an instanceof \Rutatiina\RecurringInvoice\Models\RecurringInvoiceRecurring');
+                $call = new RecurringInvoiceScheduleService($task);
+                //Log::info('This is an instanceof \Rutatiina\RecurringInvoice\Models\RecurringInvoice');
             }
-            elseif ($task instanceof \Rutatiina\RecurringExpense\Models\RecurringExpenseRecurring)
+            elseif ($task instanceof \Rutatiina\Expense\Models\RecurringExpense)
             {
-                $call = new RecurringExpenseScheduleClass($task);
-                //Log::info('This is an instanceof \Rutatiina\RecurringExpense\Models\RecurringExpenseRecurring');
+                $call = new RecurringExpenseSheduleService($task);
+                //Log::info('This is an instanceof \Rutatiina\RecurringExpense\Models\RecurringExpense');
             }
-            elseif ($task instanceof \Rutatiina\RecurringBill\Models\RecurringBillRecurring)
+            elseif ($task instanceof \Rutatiina\Bill\Models\RecurringBill)
             {
-                $call = new RecurringBillScheduleClass($task);
-                //Log::info('This is an instanceof \Rutatiina\RecurringBill\Models\RecurringBillRecurring');
+                $call = new RecurringBillScheduleService($task);
+                //Log::info('This is an instanceof \Rutatiina\RecurringBill\Models\RecurringBill');
             }
             else
             {
