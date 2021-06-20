@@ -48,6 +48,8 @@ class TrialBalanceController extends Controller
             'expense',
             'contra-expense',
             'income',
+            'revenue',
+            'contra-revenue',
             'liability',
             'cost_of_sales'
         ];
