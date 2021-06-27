@@ -28,9 +28,11 @@ class CreateRgFinancialAccountingAccountTypesTable extends Migration
             $table->unsignedBigInteger('project_id')->nullable();
             $table->unsignedInteger('code'); //NOTE:: this value MUST always be numeric i.e.  a positive number
             $table->string('type')->comment('asset, liability, equity, expense, revenue');
+            $table->string('title')->comment('e.g. Assets, Non-Operating Revenue, Liabilities, Equity ...');
+            $table->boolean('non-operating')->default(false)->comment('non-operating e.g. Non-Operating Revenues or Non-Operating Expenses');
             $table->enum('balance', ['dr', 'cr', 'dr-or-cr'])->nullable();
-            $table->unsignedInteger('name');
-            $table->unsignedInteger('tenant_code')->nullable();
+            $table->unsignedInteger('group_name');
+            $table->unsignedInteger('tenant_code')->nullable()->comment('the code the tenant assigns to the account type');
             $table->string('description')->nullable();
 
             //indexes
