@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRgFinancialAccountingAccountTypesTable extends Migration
+class CreateRgFinancialAccountTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRgFinancialAccountingAccountTypesTable extends Migration
      */
     public function up()
     {
-        Schema::connection('tenant')->create('rg_financial_accounting_account_types', function (Blueprint $table) {
+        Schema::connection('tenant')->create('rg_financial_account_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
 
@@ -31,7 +31,7 @@ class CreateRgFinancialAccountingAccountTypesTable extends Migration
             $table->string('title')->comment('e.g. Assets, Non-Operating Revenue, Liabilities, Equity ...');
             $table->boolean('non-operating')->default(false)->comment('non-operating e.g. Non-Operating Revenues or Non-Operating Expenses');
             $table->enum('balance', ['dr', 'cr', 'dr-or-cr'])->nullable();
-            $table->unsignedInteger('group_name');
+            $table->unsignedInteger('category_name');
             $table->unsignedInteger('tenant_code')->nullable()->comment('the code the tenant assigns to the account type');
             $table->string('description')->nullable();
 
@@ -49,6 +49,6 @@ class CreateRgFinancialAccountingAccountTypesTable extends Migration
      */
     public function down()
     {
-        Schema::connection('tenant')->dropIfExists('rg_financial_accounting_account_types');
+        Schema::connection('tenant')->dropIfExists('rg_financial_account_types');
     }
 }
