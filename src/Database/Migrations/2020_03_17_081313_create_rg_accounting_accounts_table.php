@@ -34,9 +34,9 @@ class CreateRgAccountingAccountsTable extends Migration
             $table->boolean('is_financial_account')->nullable();
             $table->string('slug', 100);
             $table->string('name', 100);
-            $table->char('type', 50); //['asset', 'equity', 'expense', 'contra-expense', 'income', 'liability', 'inventory', 'cost_of_sales', 'none']
-            $table->string('sub_type', 100)->nullable();
-            $table->enum('balance_type', ['debit', 'credit', 'both'])->default('both');
+            $table->char('type', 50); //['asset', 'equity', 'expense', 'income', 'liability']
+            $table->string('type_code', 100);
+            $table->enum('balance', ['debit', 'credit', 'both'])->default('both');
             $table->string('description')->nullable();
             $table->unsignedTinyInteger('payment')->default(0);
             $table->unsignedBigInteger('bank_account_id')->nullable();
