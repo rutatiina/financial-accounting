@@ -128,4 +128,9 @@ class Account extends Model
         }
     }
 
+    public function financial_account_type()
+    {
+        return $this->hasOne('Rutatiina\FinancialAccounting\Models\FinancialAccountType', 'code', 'financial_account_type_code');
+    }
+
 }

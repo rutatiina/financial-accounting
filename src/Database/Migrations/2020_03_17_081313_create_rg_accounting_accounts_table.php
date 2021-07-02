@@ -29,13 +29,10 @@ class CreateRgAccountingAccountsTable extends Migration
             $table->unsignedInteger('code'); //NOTE:: this value MUST always be numeric i.e.  a positive number
             $table->string('external_key', 250);
             $table->string('account_group_id')->default(0)->comment('Accounts group e.g. URA. 0 / Zero means group is default ie maccounts');
-            $table->unsignedInteger('app_id');
             $table->unsignedInteger('parent_code')->nullable();
-            $table->boolean('is_financial_account')->nullable();
-            $table->string('slug', 100);
             $table->string('name', 100);
             $table->char('type', 50); //['asset', 'equity', 'expense', 'income', 'liability']
-            $table->string('type_code', 100);
+            $table->string('financial_account_type_code', 100);
             $table->enum('balance', ['debit', 'credit', 'both'])->default('both');
             $table->string('description')->nullable();
             $table->unsignedTinyInteger('payment')->default(0);

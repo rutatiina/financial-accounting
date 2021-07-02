@@ -31,6 +31,7 @@ class AccountController extends Controller
         }
 
         $query = Account::setCurrency(Auth::user()->tenant->base_currency)->query();
+        $query->with('financial_account_type');
         $query->orderBy('name', 'asc');
 
         if ($request->search_value)
