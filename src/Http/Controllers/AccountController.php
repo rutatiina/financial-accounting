@@ -4,6 +4,7 @@ namespace Rutatiina\FinancialAccounting\Http\Controllers;
 
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Str;
+use Rutatiina\FinancialAccounting\Models\FinancialAccountType;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,14 +58,10 @@ class AccountController extends Controller
             return view('l-limitless-bs4.layout_2-ltr-default.appVue');
         }
 
-        $Account = new Account;
-
-        if (FacadesRequest::wantsJson())
-        {
-            return [
-                'attributes' => $Account->rgGetAttributes()
-            ];
-        }
+        return [
+            'attributes' => (new Account)->rgGetAttributes(),
+            'financialAccountTypes' => FinancialAccountType::all()->groupBy('title')
+        ];
     }
 
     public function store(Request $request)
