@@ -13,7 +13,7 @@ class TotalIncomeController extends Controller
     public function index()
     {
         //get all expense accounts
-        $incomeAccounts = Account::where('type', 'income')->get();
+        $incomeAccounts = Account::where('type', 'revenue')->get();
 
         $total = 0;
 
