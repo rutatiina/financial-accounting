@@ -5,15 +5,14 @@ namespace Rutatiina\FinancialAccounting\Http\Controllers;
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Str;
 use Rutatiina\FinancialAccounting\Models\FinancialAccountType;
-use Validator;
+use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Rutatiina\FinancialAccounting\Models\Account;
 use Rutatiina\FinancialAccounting\Models\Txn;
-use Rutatiina\Classes\Currencies as ClassesCurrencies;
-use Rutatiina\Classes\Countries as ClassesCountries;
+use Rutatiina\FinancialAccounting\Services\FinancialAccountService;
 use Yajra\DataTables\Facades\DataTables;
 
 class AccountController extends Controller
@@ -60,6 +59,9 @@ class AccountController extends Controller
         }
 
         return [
+            'pageTitle' => 'Create financial account',
+            'pageAction' => 'Create',
+            'url' => '/financial-accounts',
             'attributes' => (new Account)->rgGetAttributes(),
             'financialAccountTypes' => FinancialAccountType::all()->groupBy('title')
         ];
@@ -67,60 +69,89 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:50',
-            'code' => 'string|nullable',
-            'type' => 'required|in:asset,equity,expense,income,liability,inventory,cost_of_sales,none',
-            'sub_type' => 'string|nullable',
-            'description' => 'string|nullable',
-            'payment' => 'string|nullable',
-        ]);
+        $store = FinancialAccountService::store($request);
 
-        if ($validator->fails())
+        if ($store)
+        {
+            return [
+                'status' => true,
+                'messages' => ['Account successfully saved'],
+                'callback' => route('financial-accounts.index', [], false)
+            ];
+        }
+        else
         {
             return [
                 'status' => false,
-                'messages' => $validator->errors()->all(),
+                'messages' => FinancialAccountService::$errors,
             ];
         }
-
-        $Account = new Account;
-        $Account->tenant_id = Auth::user()->tenant->id;
-        $Account->user_id = Auth::id();
-        $Account->slug = Str::slug($request->name);
-        $Account->name = $request->name;
-        $Account->code = $request->code;
-        $Account->type = $request->type;
-        $Account->sub_type = $request->sub_type;
-        $Account->description = $request->description;
-        $Account->payment = $request->payment;
-        $Account->save();
-
-        return [
-            'status' => true,
-            'messages' => ['Account successfully saved'],
-        ];
     }
 
     public function show($id)
     {
+        //
     }
 
     public function edit($id)
     {
+        //load the vue version of the app
+        if (!FacadesRequest::wantsJson())
+        {
+            return view('l-limitless-bs4.layout_2-ltr-default.appVue');
+        }
+
+        $attributes = Account::find($id)->toArray();
+        $attributes['_method'] = 'PATCH';
+
+        $data = [
+            'pageTitle' => 'Edit financial account',
+            'pageAction' => 'Edit',
+            'url' => '/financial-accounts/' . $id, #required
+            'attributes' => $attributes,
+            'financialAccountTypes' => FinancialAccountType::all()->groupBy('title')
+        ];
+
+        return $data;
     }
 
     public function update(Request $request)
     {
+        $store = FinancialAccountService::update($request);
+
+        if ($store)
+        {
+            return [
+                'status' => true,
+                'messages' => ['Account successfully updated'],
+            ];
+        }
+        else
+        {
+            return [
+                'status' => false,
+                'messages' => FinancialAccountService::$errors,
+            ];
+        }
     }
 
     public function destroy($id)
     {
-        $account = Account::find($id)->whereNull('user_id');
+        $destroy = FinancialAccountService::destroy($id);
 
-        if ($account->delete())
+        if (!$destroy)
         {
-            return redirect()->back()->with('success', 'Account successfully deleted');
+            return [
+                'status' => false,
+                'messages' => FinancialAccountService::$errors,
+            ];
+        }
+        else
+        {
+            return [
+                'status' => true,
+                'messages' => ['Account deleted'],
+            ];
         }
     }
 

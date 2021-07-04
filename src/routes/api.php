@@ -21,8 +21,8 @@ Route::group(['middleware' => ['auth:api', 'tenant']], function() {
 
 	Route::prefix('api/v1')->group(function () {
 
-		Route::resource('accounts', 'Rutatiina\FinancialAccounting\Http\Controllers\Api\V1\AccountController', ['as' => 'api.v1']);
-		Route::resource('transactions', 'Rutatiina\FinancialAccounting\Http\Controllers\Api\V1\TransactionController', ['as' => 'api.v1']);
+		//Route::resource('accounts', 'Rutatiina\FinancialAccounting\Http\Controllers\Api\V1\AccountController', ['as' => 'api.v1']);
+		//Route::resource('transactions', 'Rutatiina\FinancialAccounting\Http\Controllers\Api\V1\TransactionController', ['as' => 'api.v1']);
 
 	});
 
