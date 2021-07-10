@@ -92,7 +92,7 @@ class DashboardController extends Controller
         ];
     }
 
-    public function incomesAndExpense(Request $request)
+    public function revenuesAndExpense(Request $request)
     {
         $tenant = Auth::user()->tenant;
 
@@ -121,17 +121,17 @@ class DashboardController extends Controller
             $expenses[$year_month] = 0;
         }
 
-        //Get the the income and expense accounts
+        //Get the the revenue and expense accounts
         $expense_financial_account_codes = [];
         $revenue_financial_account_codes = [];
-        $accounts = Account::whereIn('tenant_id', [0, $tenant->id])->get();
+        $accounts = Account::where('tenant_id', $tenant->id)->get();
         foreach($accounts as $account)
         {
             if ($account->type == 'expense') $expense_financial_account_codes[] = $account->code;
-            if ($account->type == 'income') $revenue_financial_account_codes[] = $account->code;
+            if ($account->type == 'revenue') $revenue_financial_account_codes[] = $account->code;
         }
 
-        //Get all the monthly incomes for the past one year
+        //Get all the monthly revenues for the past one year
         if ($request->contact)
         {
             $accountBalance = ContactBalance::query();
@@ -211,7 +211,7 @@ class DashboardController extends Controller
                 'curve' => 'smooth'
             ],
             'title' => [
-                'text' => 'Incomes and Expenses for the past year',
+                'text' => 'Revenues and Expenses for the past year',
                 'align' => 'left'
             ],
             'grid' => [

@@ -23,7 +23,7 @@ Route::group(['middleware' => ['web', 'auth', 'tenant', 'service.accounting']], 
 		Route::get('dashboard/invoices-summary', 'Rutatiina\FinancialAccounting\Http\Controllers\DashboardController@invoicesSummary');
 		Route::get('dashboard/bills-summary', 'Rutatiina\FinancialAccounting\Http\Controllers\DashboardController@billsSummary');
 		Route::get('dashboard/data-count', 'Rutatiina\FinancialAccounting\Http\Controllers\DashboardController@dataCount');
-		Route::get('dashboard/incomes-and-expense', 'Rutatiina\FinancialAccounting\Http\Controllers\DashboardController@incomesAndExpense');
+		Route::get('dashboard/incomes-and-expense', 'Rutatiina\FinancialAccounting\Http\Controllers\DashboardController@revenuesAndExpense');
 
 
         // >> approve
