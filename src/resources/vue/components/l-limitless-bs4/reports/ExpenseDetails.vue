@@ -89,7 +89,7 @@
                         </tbody>
                     </table>
 
-                    <rg-tables-pagination></rg-tables-pagination>
+                    <rg-tables-pagination v-bind:table-data-prop="tableData"></rg-tables-pagination>
 
                 </div>
 
