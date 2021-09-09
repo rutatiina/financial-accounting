@@ -312,7 +312,7 @@ const RgTxn = {
                     try
                     {
 
-                        return await axios.get('/financial-accounts/accounts/by-type/income')
+                        return await axios.get('/financial-accounts/accounts/by-type/revenue')
                             .then(response =>
                             {
                                 this.txnAccountsIncome = response.data.data
