@@ -12,6 +12,8 @@
     "minimum-stability": "beta",
     "require": {
         "laravel/framework": "^8.0",
+        "rutatiina/globals": "*",
+        "rutatiina/services": "*",
         "rutatiina/tenant": "*",
         "rutatiina/tax": "*",
         "rutatiina/contact": "*",
