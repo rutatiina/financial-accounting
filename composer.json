@@ -17,7 +17,9 @@
         "rutatiina/tenant": "*",
         "rutatiina/tax": "*",
         "rutatiina/contact": "*",
-        "rutatiina/item": "*"
+        "rutatiina/item": "*",
+        "rutatiina/sales": "*",
+        "rutatiina/purchases": "*"
     },
     "autoload": {
         "psr-4": {
