@@ -5,7 +5,7 @@ namespace Rutatiina\FinancialAccounting\Models;
 use Illuminate\Database\Eloquent\Model;
 use Rutatiina\FinancialAccounting\Classes\AccountClass;
 use Spatie\Activitylog\Traits\LogsActivity;
-use App\Scopes\TenantIdScope;
+use Rutatiina\Tenant\Scopes\TenantIdScope;
 
 class Account extends Model
 {
