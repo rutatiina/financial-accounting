@@ -21,7 +21,6 @@
         "barryvdh/laravel-dompdf": "^0.8.5",
         "barryvdh/laravel-snappy": "^0.4.6",
         "dragonmantank/cron-expression": "^3.0",
-        "infureal/artisan-gui": "^1.4",
         "rutatiina/globals": "*",
         "rutatiina/services": "*",
         "rutatiina/tenant": "*",
