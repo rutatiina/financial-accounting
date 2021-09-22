@@ -3,6 +3,7 @@
 namespace Rutatiina\FinancialAccounting;
 
 use Illuminate\Support\ServiceProvider;
+use Rutatiina\FinancialAccounting\Http\Middleware\FinancialAccountingMiddleware;
 
 class FinancialAccountingServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,8 @@ class FinancialAccountingServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/resources/views/limitless', 'financial-accounting');
         $this->loadViewsFrom(__DIR__.'/resources/views/limitless-bs4', 'limitless-bs4');
         $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
+
+        $this->app['router']->aliasMiddleware('service.accounting', FinancialAccountingMiddleware::class);
     }
 
     /**
