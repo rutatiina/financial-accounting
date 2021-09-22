@@ -23,6 +23,7 @@
         "dragonmantank/cron-expression": "^3.0",
         "rutatiina/globals": "*",
         "rutatiina/services": "*",
+        "rutatiina/user": "*",
         "rutatiina/tenant": "*",
         "rutatiina/tax": "*",
         "rutatiina/contact": "*",
