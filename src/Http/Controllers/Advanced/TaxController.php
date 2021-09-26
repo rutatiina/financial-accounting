@@ -24,7 +24,7 @@ class TaxController extends Controller
 	{
         //load the vue version of the app
         if (!FacadesRequest::wantsJson()) {
-            return view('l-limitless-bs4.layout_2-ltr-default.appVue');
+            return view('ui.limitless::layout_2-ltr-default.appVue');
         }
 
         $per_page = ($request->per_page) ? $request->per_page : 20;
@@ -39,7 +39,7 @@ class TaxController extends Controller
 	{
         //load the vue version of the app
         if (!FacadesRequest::wantsJson()) {
-            return view('l-limitless-bs4.layout_2-ltr-default.appVue');
+            return view('ui.limitless::layout_2-ltr-default.appVue');
         }
 
         $Tax = new Tax;
@@ -109,7 +109,7 @@ class TaxController extends Controller
 	{
         //load the vue version of the app
         if (!FacadesRequest::wantsJson()) {
-            return view('l-limitless-bs4.layout_2-ltr-default.appVue');
+            return view('ui.limitless::layout_2-ltr-default.appVue');
         }
 
         $Tax = Tax::find($id);

@@ -1,4 +1,4 @@
-@extends('l-limitless-bs4.layout_2-ltr-default.pdf')
+@extends('ui.limitless::layout_2-ltr-default.pdf')
 
 @section('title', $txn->type->name.' #'.$txn->number)
 
