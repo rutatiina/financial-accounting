@@ -1,8 +1,8 @@
 <?php
 
-Route::get('/', '\Rutatiina\FinancialAccounting\Http\Controllers\FinancialAccountingController@index');
 
 Route::group(['middleware' => ['web']], function() {
+    Route::get('/', '\Rutatiina\FinancialAccounting\Http\Controllers\FinancialAccountingController@index');
 	Route::prefix('docs/accounting')->group(function () {
 		//Route::get('api', 'Rutatiina\FinancialAccounting\Http\Controllers\ApiController@index')->name('accounting.api.index');
     });
