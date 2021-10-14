@@ -15,7 +15,14 @@ class TotalPayablesController extends Controller
         //get all expense accounts
         $account = Account::findCode(config('financial-accounting.accounts_payables_code'));
 
-        return floatval($account->balance->credit - $account->balance->debit);
+        if ($account)
+        {
+            return floatval($account->balance->credit - $account->balance->debit);
+        }
+        else
+        {
+            return 0;
+        }
 
     }
 }

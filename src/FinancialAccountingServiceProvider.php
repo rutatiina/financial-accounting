@@ -24,6 +24,10 @@ class FinancialAccountingServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
 
         $this->app['router']->aliasMiddleware('service.accounting', FinancialAccountingMiddleware::class);
+
+        $this->publishes([
+            __DIR__.'/config/financial-accounting.php' => config_path('financial-accounting.php'),
+        ], 'rutatiina-configs');
     }
 
     /**

@@ -14,7 +14,14 @@ class TotalReceivablesController extends Controller
     {
         //get all expense accounts
         $account = Account::find(config('financial-accounting.accounts_receivable_code'));
-        return floatval($account->balance->debit - $account->balance->credit);
+        if ($account)
+        {
+            return floatval($account->balance->debit - $account->balance->credit);
+        }
+        else
+        {
+            return 0;
+        }
 
     }
 }
