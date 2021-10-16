@@ -29,6 +29,7 @@
         "rutatiina/tax": "*",
         "rutatiina/contact": "*",
         "rutatiina/item": "*",
+        "rutatiina/journal-entry": "*",
         "rutatiina/banking": "*",
         "rutatiina/sales": "*",
         "rutatiina/purchases": "*"
