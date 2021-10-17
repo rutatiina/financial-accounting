@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Rutatiina\Tax\Models\Tax;
-use Rutatiina\Classes\Currencies  as ClassesCurrencies;
-use Rutatiina\Classes\Countries  as ClassesCountries;
+use Rutatiina\Globals\Services\Currencies  as ClassesCurrencies;
+use Rutatiina\Globals\Services\Countries  as ClassesCountries;
 use Rutatiina\Item\Traits\ItemsVueSearchSelect;
 
 class TaxController extends Controller
