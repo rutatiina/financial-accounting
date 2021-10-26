@@ -3,6 +3,7 @@
 namespace Rutatiina\FinancialAccounting;
 
 use Illuminate\Support\ServiceProvider;
+use Rutatiina\FinancialAccounting\Commands\FinancialAccountingCommand;
 use Rutatiina\FinancialAccounting\Http\Middleware\FinancialAccountingMiddleware;
 
 class FinancialAccountingServiceProvider extends ServiceProvider
@@ -28,6 +29,12 @@ class FinancialAccountingServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/config/financial-accounting.php' => config_path('financial-accounting.php'),
         ], 'rutatiina-configs');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                FinancialAccountingCommand::class,
+            ]);
+        }
     }
 
     /**
