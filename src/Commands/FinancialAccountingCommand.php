@@ -67,9 +67,9 @@ class FinancialAccountingCommand extends Command
         $this->info('- Running migrations.');
 
         //php artisan db:wipe --database system && php artisan db:wipe --database tenant && php artisan migrate:fresh --seed
-        //$this->call('db:wipe --database system');
-        //$this::call('db:wipe --database tenant');
-        //$this::call('php artisan migrate:fresh --seed');
+        $this->call('db:wipe', ['--database' => 'system']);
+        $this::call('db:wipe', ['--database' => 'tenant']);
+        $this::call('migrate:fresh', ['--seed' => true]);
 
         $this->info('- Running seeders.');
 
@@ -77,7 +77,7 @@ class FinancialAccountingCommand extends Command
             '--class' => 'Rutatiina\Item\Seeders\ItemCategoriesSeeder',
         ]);
 
-        /*
+        //*
         $this->info('- Publishing resources.');
 
         $this->call('vendor:publish', [
