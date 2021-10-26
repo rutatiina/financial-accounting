@@ -42,6 +42,7 @@ class FinancialAccountingCommand extends Command
         //By default it will install the accouting app i.e. --accountant
 
         $bundle = $this->option('bundle');
+        $appEnv = env('APP_ENV');
 
         if (!$bundle)
         {
@@ -78,27 +79,30 @@ class FinancialAccountingCommand extends Command
         ]);
 
         //*
-        $this->info('- Publishing resources.');
+        if (!$appEnv == 'local')
+        {
+            $this->info('- Publishing resources.');
 
-        $this->call('vendor:publish', [
-            '--provider' => 'Spatie\Permission\PermissionServiceProvider',
-        ]);
+            $this->call('vendor:publish', [
+                '--provider' => 'Spatie\Permission\PermissionServiceProvider',
+            ]);
 
-        $this->call('vendor:publish', [
-            '--tag' => 'rutatiina/item',
-            //'--force' => true
-        ]);
-        $this->call('vendor:publish', [
-            '--tag' => 'rutatiina/configs',
-            //'--force' => true
-        ]);
-        $this->call('vendor:publish', [
-            '--tag' => 'rutatiina/ui',
-            //'--force' => true
-        ]);
+            $this->call('vendor:publish', [
+                '--tag' => 'rutatiina/item',
+                //'--force' => true
+            ]);
+            $this->call('vendor:publish', [
+                '--tag' => 'rutatiina/configs',
+                //'--force' => true
+            ]);
+            $this->call('vendor:publish', [
+                '--tag' => 'rutatiina/ui',
+                //'--force' => true
+            ]);
 
-        $this->info('- Setup the storage folder link');
-        $this->call('storage:link');
+            $this->info('- Setup the storage folder link');
+            $this->call('storage:link');
+        }
         //*/
 
         $this->info('- Installation complete successfuly.');
