@@ -7,7 +7,7 @@ use Rutatiina\FinancialAccounting\Classes\AccountClass;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Rutatiina\Tenant\Scopes\TenantIdScope;
 
-class FinancialAccountType extends Model
+class FinancialAccountCategory extends Model
 {
     use LogsActivity;
 
@@ -19,7 +19,7 @@ class FinancialAccountType extends Model
 
     protected $connection = 'tenant';
 
-    protected $table = 'rg_financial_account_types';
+    protected $table = 'rg_financial_account_categories';
 
     protected $primaryKey = 'id';
 
@@ -63,6 +63,11 @@ class FinancialAccountType extends Model
     public static function findCode($code)
     {
         return static::where('code', $code)->first();
+    }
+
+    public function financial_accounts()
+    {
+        return $this->hasMany('Rutatiina\FinancialAccounting\Models\Account', 'financial_account_category_code');
     }
 
 }

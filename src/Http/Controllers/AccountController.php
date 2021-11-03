@@ -4,7 +4,7 @@ namespace Rutatiina\FinancialAccounting\Http\Controllers;
 
 use Illuminate\Support\Facades\Request as FacadesRequest;
 use Illuminate\Support\Str;
-use Rutatiina\FinancialAccounting\Models\FinancialAccountType;
+use Rutatiina\FinancialAccounting\Models\FinancialAccountCategory;
 use Illuminate\Validation\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +30,7 @@ class AccountController extends Controller
         }
 
         $query = Account::setCurrency(Auth::user()->tenant->base_currency)->query();
-        $query->with('financial_account_type');
+        $query->with('financial_account_category');
         $query->orderBy('name', 'asc');
 
         if ($request->search_value)
@@ -63,7 +63,7 @@ class AccountController extends Controller
             'pageAction' => 'Create',
             'url' => '/financial-accounts',
             'attributes' => (new Account)->rgGetAttributes(),
-            'financialAccountTypes' => FinancialAccountType::all()->groupBy('title')
+            'financialAccountTypes' => FinancialAccountCategory::all()->groupBy('title')
         ];
     }
 
@@ -109,7 +109,7 @@ class AccountController extends Controller
             'pageAction' => 'Edit',
             'url' => '/financial-accounts/' . $id, #required
             'attributes' => $attributes,
-            'financialAccountTypes' => FinancialAccountType::all()->groupBy('title')
+            'financialAccountTypes' => FinancialAccountCategory::all()->groupBy('title')
         ];
 
         return $data;

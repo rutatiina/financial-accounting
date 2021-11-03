@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 use Rutatiina\FinancialAccounting\Models\Account;
 use Rutatiina\FinancialAccounting\Models\AccountBalance;
 use Rutatiina\FinancialAccounting\Models\ContactBalance;
-use Rutatiina\FinancialAccounting\Models\FinancialAccountType;
+use Rutatiina\FinancialAccounting\Models\FinancialAccountCategory;
 
 class FinancialAccountService
 {
@@ -16,13 +16,13 @@ class FinancialAccountService
     public static function validate($request)
     {
         $messages = [
-            'financial_account_type_code.required' => 'The type field is required.'
+            'financial_account_category_code.required' => 'The type field is required.'
         ];
 
         $rules = [
             'name' => 'required|max:50',
             'code' => 'nullable',
-            'financial_account_type_code' => 'required',
+            'financial_account_category_code' => 'required',
             'description' => 'nullable',
         ];
 
@@ -46,10 +46,10 @@ class FinancialAccountService
             return false;
         }
 
-        $financialAccountType = FinancialAccountType::where('code', $request->financial_account_type_code)->first();
+        $financialAccountType = FinancialAccountCategory::where('code', $request->financial_account_category_code)->first();
 
         //get the number if accounts under the type / category
-        $count = Account::where('financial_account_type_code', $financialAccountType->code)->count();
+        $count = Account::where('financial_account_category_code', $financialAccountType->code)->count();
 
 
         $code = rtrim($financialAccountType->code, "0");
@@ -63,7 +63,7 @@ class FinancialAccountService
         $Account->name = $request->name;
         $Account->code = $code; //$request->code;
         $Account->type = $financialAccountType->type;
-        $Account->financial_account_type_code = $request->financial_account_type_code;
+        $Account->financial_account_category_code = $request->financial_account_category_code;
         $Account->description = $request->description;
         $Account->payment = $request->payment;
 
@@ -80,14 +80,14 @@ class FinancialAccountService
             return false;
         }
 
-        $financialAccountType = FinancialAccountType::where('code', $request->financial_account_type_code)->first();
+        $financialAccountType = FinancialAccountCategory::where('code', $request->financial_account_category_code)->first();
 
         $Account = Account::find($request->id);
 
         $Account->name = $request->name;
         $Account->code = $request->code;
         $Account->type = $financialAccountType->type;
-        $Account->financial_account_type_code = $request->financial_account_type_code;
+        $Account->financial_account_category_code = $request->financial_account_category_code;
         $Account->description = $request->description;
 
         return $Account->save();

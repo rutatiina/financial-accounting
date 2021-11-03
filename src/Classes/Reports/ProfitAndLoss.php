@@ -109,7 +109,11 @@ class ProfitAndLoss
         $this->opening_date();
 
         #Get all the Income statement account balances
-        $AccountModel = Account::select(['id', 'code', 'parent_code', 'name','type'])->whereIn('type', ['expense', 'contra-expense', 'income', 'cost_of_sales'])->get();
+        $AccountModel = Account::select(['id', 'code', 'financial_account_category_code', 'name','type'])
+            ->whereHas('financial_account_category', function ($query) {
+                return $query->whereIn('type', ['revenue', 'expense']);
+            })
+            ->get();
 
         $accounts = [];
         
@@ -117,9 +121,9 @@ class ProfitAndLoss
         {
             $accounts[$account->code] = [
             	'code' => $account->code,
-            	'parent_code' => $account->parent_code,
+            	'financial_account_category_code' => $account->financial_account_category_code,
             	'name' => $account->name,
-            	'type' => $account->type,
+            	'type' => $account->financial_account_category->type,
 			];
             $accounts[$account->code]['sub_accounts'] = [];
 
@@ -147,20 +151,15 @@ class ProfitAndLoss
             
             //var_dump($balances); exit;
 
-            if (strtolower($account['type']) == 'expense' || strtolower($account['type']) == 'contra-expense')
+            if (strtolower($account['type']) == 'expense')
             {
                 $balance = $balances['debit'] - $balances['credit'];
                 $statement['total_expense'] += $balance;
             }
-            elseif (strtolower($account['type']) == 'income')
+            elseif (strtolower($account['type']) == 'revenue')
             {
                 $balance = $balances['credit'] - $balances['debit'];
                 $statement['total_income'] += $balance;
-            }
-            elseif (strtolower($account['type']) == 'cost_of_sales')
-            {
-                $balance = $balances['debit'] - $balances['credit'];
-                $statement['total_cost_of_sales'] += $balance;
             }
             
             $accounts[$key]['balance_account'] = floatval($balance);
@@ -168,6 +167,7 @@ class ProfitAndLoss
         }
 
         #set the balance_total and balance_subaccounts
+        /*
         foreach($accounts as $key => $account)
         {
             if (empty($account['parent_code']))
@@ -180,6 +180,9 @@ class ProfitAndLoss
                 $accounts[$account['parent_code']]['balance_total'] += $account['balance_account'];
             }                    
         }
+        */
+
+        //print_r($accounts); exit;
 
         //delete empty accounts
         foreach($accounts as $key => $account)
@@ -192,6 +195,7 @@ class ProfitAndLoss
 
 
         #Sub_account Formating
+        /*
         foreach($accounts as $key => $account)
         {
             if (empty($account['parent_code'])) {
@@ -202,15 +206,16 @@ class ProfitAndLoss
                 unset($accounts[$key]);
             }                    
         }
-        
+        */
+
         //print_r($accounts); exit;
         foreach($accounts as $key => $account)
         {
-            if (strtolower($account['type']) == 'expense' || strtolower($account['type']) == 'contra-expense')
+            if (strtolower($account['type']) == 'expense')
             {
                 $statement['expenses'][$account['code']] = (object) $account;
             }
-            elseif (strtolower($account['type']) == 'income')
+            elseif (strtolower($account['type']) == 'revenue')
             {
                 $statement['incomes'][$account['code']] = (object) $account;
             }

@@ -31,7 +31,7 @@ class CreateRgAccountingAccountsTable extends Migration
             //$table->unsignedInteger('parent_code')->nullable();
             $table->string('name', 100);
             $table->char('type', 50); //['asset', 'equity', 'expense', 'income', 'liability']
-            $table->unsignedInteger('financial_account_type_code');
+            $table->unsignedInteger('financial_account_category_code');
             $table->enum('balance', ['debit', 'credit', 'both'])->default('both');
             $table->string('description')->nullable();
             $table->unsignedTinyInteger('payment')->default(0)->nullable(); //todo this field is to be removed

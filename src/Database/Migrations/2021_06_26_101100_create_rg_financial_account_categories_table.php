@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRgFinancialAccountTypesTable extends Migration
+class CreateRgFinancialAccountCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateRgFinancialAccountTypesTable extends Migration
      */
     public function up()
     {
-        Schema::connection('tenant')->create('rg_financial_account_types', function (Blueprint $table) {
+        Schema::connection('tenant')->create('rg_financial_account_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
 
@@ -49,6 +49,6 @@ class CreateRgFinancialAccountTypesTable extends Migration
      */
     public function down()
     {
-        Schema::connection('tenant')->dropIfExists('rg_financial_account_types');
+        Schema::connection('tenant')->dropIfExists('rg_financial_account_categories');
     }
 }
