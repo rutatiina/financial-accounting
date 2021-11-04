@@ -56,8 +56,8 @@ class SalesByItemController extends Controller
                     DB::raw('AVG(rate) as avg_rate')
                 )
                 //->where('type', 'item') //todo look at this
-                ->where('type_id', $item->id)
-                ->groupBy('type_id')
+                ->where('item_id', $item->id)
+                ->groupBy('item_id')
                 ->first();
 
             if ($itemSales)

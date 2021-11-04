@@ -52,7 +52,7 @@
                     <h6 v-if="tableData.response">For {{tableData.response.opening_date}} to {{tableData.response.closing_date}}</h6>
                 </div>
 
-                <div class="table-responsive">
+                <div class="table-responsive overflow-visible">
                     <table class="table">
                         <thead>
                             <tr>

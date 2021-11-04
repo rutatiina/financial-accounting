@@ -114,7 +114,11 @@ class BalanceSheet
 
 
         #Get all the balance sheet account balance
-        $query = Account::select(['id', 'code', 'parent_code', 'name', 'type'])->whereIn('type', ['Asset', 'Inventory', 'Equity', 'Liability'])->get();
+        $query = Account::select(['id', 'code', 'financial_account_category_code', 'name', 'type'])
+            ->whereHas('financial_account_category', function ($query) {
+                return $query->whereIn('type', ['asset', 'equity', 'liability']);
+            })
+            ->get();
 
         $accounts = [];
 
@@ -122,9 +126,9 @@ class BalanceSheet
         {
             $accounts[$account['code']] = [
                 'code' => $account->code,
-                'parent_code' => $account->parent_code,
+                'financial_account_category_code' => $account->financial_account_category_code,
                 'name' => $account->name,
-                'type' => $account->type,
+                'type' => $account->financial_account_category->type,
             ];
             $accounts[$account['code']]['sub_accounts'] = [];
         }
@@ -178,16 +182,19 @@ class BalanceSheet
         $statement['total_liability_and_equity'] += $retained_earnings;
         $statement['retained_earnings'] = $retained_earnings;
 
+        /*
         //if ($retained_earnings != 0)
         //{
-        $Accounts[] = [
-            'code' => 0,
-            'parent_code' => 9,
+        $accounts[] = [
+            'code' => '_retained_earning_',
+            'financial_account_category_code' => 9,
             'name' => 'Retained Earnings: From ' . $profitAndLossStatement['opening_date'] . ' to ' . $profitAndLossStatement['closing_date'],
             'balance' => $retained_earnings,
-            'details' => []
+            'details' => [],
+            'type' => 'equity'
         ];
         //}
+        */
 
 
         #Balancing figure
@@ -199,18 +206,20 @@ class BalanceSheet
         }
         else
         {
-            $accounts[] = array(
+            $accounts[] = [
                 'code' => 0,
-                'parent_code' => 9,
+                'financial_account_category_code' => 9,
                 'name' => 'Balancing Figure',
                 'balance' => $statement['balancing_figure'],
-                'details' => array()
-            );
+                'details' => [],
+                'type' => ''
+            ];
         }
 
         $statement['total_liability_and_equity'] += $statement['balancing_figure'];
 
         #SubAccount Formating
+        /*
         foreach ($accounts as $key => $account)
         {
             if (empty($account['parent_code']))
@@ -227,6 +236,7 @@ class BalanceSheet
                 }
             }
         }
+        */
 
 
         #Remove the empty accounts
@@ -271,13 +281,18 @@ class BalanceSheet
         $owners_equity = [];
         foreach ($statement['liability_and_equity'] as $key => $value)
         {
+            //Retained Earnings
             if ($value['code'] == 9)
             {
                 $owners_equity = $statement['liability_and_equity'][$key];
                 unset($statement['liability_and_equity'][$key]);
             }
         }
-        array_push($statement['liability_and_equity'], $owners_equity);
+
+        if (count($owners_equity) > 0)
+        {
+            array_push($statement['liability_and_equity'], $owners_equity);
+        }
 
         //echo '<pre>'; print_r($statement); exit;
         return $statement;
