@@ -22,6 +22,7 @@ class AccountController extends Controller
         //this is to see how tags work another one
         //A commit without a tag
         //commit 1
+        //commit 2
     }
 
     public function index(Request $request)
