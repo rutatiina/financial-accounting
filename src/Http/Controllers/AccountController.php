@@ -19,6 +19,7 @@ class AccountController extends Controller
 {
     public function __construct()
     {
+        //this is to see how tags work
     }
 
     public function index(Request $request)
