@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['web']], function() {
     Route::get('/', '\Rutatiina\FinancialAccounting\Http\Controllers\FinancialAccountingController@index');
