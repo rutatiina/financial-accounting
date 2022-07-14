@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Rutatiina\Admin\Models\ServiceUser;
+use Rutatiina\Qbuks\Models\ServiceUser;
 
 class FinancialAccountingMiddleware
 {
