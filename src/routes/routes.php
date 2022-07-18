@@ -137,6 +137,11 @@ Route::group(['middleware' => ['web', 'auth', 'tenant', 'service.accounting']], 
 		Route::post('reports/expense-details', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\ExpenseDetailsController@generate');
         #<< expense-details
 
+		#>> inventory-summary
+		Route::get('reports/inventory-summary', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\InventoryReportsController@index');
+		Route::post('reports/inventory-summary', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\InventoryReportsController@summary');
+        #<< inventory-summary
+
         Route::get('accounts/{id}/transactions', 'Rutatiina\FinancialAccounting\Http\Controllers\AccountController@transactions')->name('accounting.accounts.transactions');
         Route::get('accounts/by-type/{type}', 'Rutatiina\FinancialAccounting\Http\Controllers\AccountController@byType');
         Route::get('accounts/is-payment', 'Rutatiina\FinancialAccounting\Http\Controllers\AccountController@isPayment');
