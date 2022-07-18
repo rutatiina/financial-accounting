@@ -15,6 +15,8 @@ class FinancialAccountingServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //comment to activate tag
+        
         include __DIR__.'/routes/routes.php';
         include __DIR__.'/routes/api.php';
 
