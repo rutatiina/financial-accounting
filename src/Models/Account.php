@@ -3,9 +3,9 @@
 namespace Rutatiina\FinancialAccounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rutatiina\FinancialAccounting\Classes\AccountClass;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Rutatiina\Tenant\Scopes\TenantIdScope;
+use Illuminate\Support\Facades\Schema;
 
 class Account extends Model
 {
@@ -19,6 +19,7 @@ class Account extends Model
 
     protected $connection = 'tenant';
 
+    protected $tableOnly = 'rg_accounting_accounts';
     protected $table = 'rg_accounting_accounts';
 
     protected $primaryKey = 'id';
@@ -131,6 +132,11 @@ class Account extends Model
     public function financial_account_category()
     {
         return $this->hasOne('Rutatiina\FinancialAccounting\Models\FinancialAccountCategory', 'code', 'financial_account_category_code');
+    }
+
+    public function getSearchableColumns()
+    {
+        return Schema::connection($this->connection)->getColumnListing($this->tableOnly);
     }
 
 }

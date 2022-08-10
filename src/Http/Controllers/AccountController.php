@@ -45,7 +45,20 @@ class AccountController extends Controller
             $request->request->remove('page');
             //return $request->all();
 
-            $query->where('name', 'like', '%'.$request->search_value.'%');
+            //$query->where('name', 'like', '%'.$request->search_value.'%');
+        }
+
+        if ($request->search)
+        {
+            $request->request->remove('page');
+
+            $query->where(function($q) use ($request) {
+                $columns = (new Account)->getSearchableColumns();
+                foreach($columns as $column)
+                {
+                    $q->orWhere($column, 'like', '%'.Str::replace(' ', '%', $request->search).'%');
+                }
+            });
         }
 
         $AccountPaginate = $query->paginate(20);
