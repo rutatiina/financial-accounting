@@ -38,6 +38,7 @@ class AccountController extends Controller
         $query->with('financial_account_category');
         $query->orderBy('name', 'asc');
 
+        /*
         if ($request->search_value)
         {
             //$request->except(['page']);
@@ -47,6 +48,7 @@ class AccountController extends Controller
 
             //$query->where('name', 'like', '%'.$request->search_value.'%');
         }
+        //*/
 
         if ($request->search)
         {
