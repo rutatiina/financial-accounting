@@ -23,7 +23,8 @@ class ReportController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
+        $this->middleware('permission:reports.view');
     }
 
     public function index()
@@ -34,40 +35,4 @@ class ReportController extends Controller
         }
 	}
 
-    public function create() {}
-
-    public function store(Request $request) {}
-
-    public function show($txnId) {
-        $txn = Transaction::transaction($txnId);
-        //print_r($txn); exit;
-        return view('accounting::sales.estimates.show')->with([
-            'txn'       => $txn,
-        ]);
-    }
-
-    public function edit($txnId) {}
-
-    public function update(Request $request) {}
-
-    public function destroy() {}
-
-    public function datatables() {
-
-        $txns = Transaction::paginate(false)->findByEntree('estimate');
-
-        return Datatables::of($txns)->make(true);
-    }
-
-    public function exportToExcel() {
-        $export = Txn::all()->downloadExcel(
-            'invoices.xlsx',
-            null,
-            false
-        );
-
-        //$books->load('author', 'publisher'); //of no use
-
-        return $export;
-    }
 }

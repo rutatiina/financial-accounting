@@ -19,11 +19,10 @@ class AccountController extends Controller
 {
     public function __construct()
     {
-        //this is to see how tags work another one
-        //A commit without a tag
-        //commit 1
-        //commit 2
-        //commit 3
+        $this->middleware('permission:chat-of-accounts.view');
+        $this->middleware('permission:chat-of-accounts.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:chat-of-accounts.update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:chat-of-accounts.delete', ['only' => ['destroy']]);
     }
 
     public function index(Request $request)
@@ -173,27 +172,6 @@ class AccountController extends Controller
                 'messages' => ['Account deleted'],
             ];
         }
-    }
-
-    public function transactions($id)
-    {
-        $query = Txn::query();
-        $query->where('debit', $id);
-        $query->orWhere('credit', $id);
-
-        $data = Datatables::of($query)->toArray();
-
-        //print_r($data['data']); exit;
-
-        foreach ($data['data'] as $index => $value)
-        {
-            $data['data'][$index]['description'] = 'Doc type #' . $value['number'];
-            $data['data'][$index]['currency'] = $value['base_currency'];
-            $data['data'][$index]['debit_amount'] = ($value['debit'] == $id) ? floatval($value['total']) : 0;
-            $data['data'][$index]['credit_amount'] = ($value['credit'] == $id) ? floatval($value['total']) : 0;
-        }
-
-        return json_encode($data);
     }
 
     public function byType($type)
