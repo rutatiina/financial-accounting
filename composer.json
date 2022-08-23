@@ -9,7 +9,7 @@
             "email": "rutatiina@gmail.com"
         }
     ],
-    "minimum-stability": "beta",
+    "minimum-stability": "dev",
     "require": {
         "laravel/framework": "^8.0",
         "laravel/helpers": "^1.4",
