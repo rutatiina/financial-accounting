@@ -30,7 +30,7 @@ class FinancialAccountingServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/config/financial-accounting.php' => config_path('financial-accounting.php'),
-        ], 'rutatiina-configs');
+        ], 'rutatiina/financial-accounting');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
