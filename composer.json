@@ -21,6 +21,7 @@
         "barryvdh/laravel-dompdf": "^0.8.5",
         "barryvdh/laravel-snappy": "^0.4.6",
         "dragonmantank/cron-expression": "^3.0",
+        "bkwld/cloner": "^3.10",
         "rutatiina/ui": "dev-main",
         "rutatiina/globals": "dev-main",
         "rutatiina/services": "dev-main",
