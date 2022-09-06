@@ -13,34 +13,34 @@ class CreateRgFinancialAccountLedgersTable extends Migration
      */
     public function up()
     {
+        Schema::connection('tenant')->dropIfExists('rg_financial_account_ledgers');
+        Schema::connection('tenant')->dropIfExists('rg_financial_accounts_ledgers');
+
         Schema::connection('tenant')->create('rg_financial_account_ledgers', function (Blueprint $table)
         {
-            /*
-             * The temporary method may be used to indicate that the table should be "temporary".
-             * Temporary tables are only visible to the current connection's database session and are dropped automatically when the connection is closed:
-             */
-            $table->temporary();
-
             $table->bigIncrements('id');
             $table->timestamps();
 
             //>> default columns
             $table->softDeletes();
             $table->unsignedBigInteger('tenant_id');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             //<< default columns
 
             //>> table columns
             $table->unsignedBigInteger('project_id')->nullable();
-            $table->string('transaction_name', 50); //e.g. invoice
-            $table->unsignedBigInteger('transaction_id'); //e.g. 23
+            $table->string('model', 2500);
+            $table->unsignedBigInteger('model_id');
             $table->date('date');
+            $table->date('external_date')->nullable();
             $table->unsignedBigInteger('financial_account_code');
             $table->enum('effect', ['debit', 'credit']);
             $table->unsignedDecimal('total', 20, 5);
             $table->string('base_currency', 3);
             $table->string('quote_currency', 3);
             $table->unsignedDecimal('exchange_rate', 20,5);
-            $table->unsignedBigInteger('contact_id');
+            $table->unsignedBigInteger('contact_id')->nullable();
 
         });
     }
