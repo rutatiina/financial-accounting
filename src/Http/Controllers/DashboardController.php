@@ -148,7 +148,7 @@ class DashboardController extends Controller
         else
         {
             $accountBalance = AccountBalance::query();
-            $accountBalance->select('financial_account_code', DB::raw('DATE_FORMAT(`date`,\'%Y %b\') AS `year_month`'), DB::raw('sum(debit) as debit'), DB::raw('sum(credit) as credit'));
+            $accountBalance->select('*', 'financial_account_code', DB::raw('DATE_FORMAT(`date`,\'%Y %b\') AS `year_month`'), DB::raw('max(debit) as debit'), DB::raw('max(credit) as credit'));
             $accountBalance->whereDate('date', '>=', date('Y-m-d', strtotime($one_year_ago)));
             $accountBalance->whereDate('date', '<=', date('Y-m-d'));
             $accountBalance->where('currency', $tenant->base_currency);
@@ -160,6 +160,8 @@ class DashboardController extends Controller
 
         //print_r($this->db->last_query()); exit; //MONTH(record_date)
         //print_r($results); exit; //MONTH(record_date)
+        // return $revenue_financial_account_codes;
+        // return $expense_financial_account_codes;
 
         foreach ($results as $row) {
             if (in_array($row->financial_account_code, $revenue_financial_account_codes)) {
