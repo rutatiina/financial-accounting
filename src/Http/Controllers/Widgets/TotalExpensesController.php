@@ -13,7 +13,9 @@ class TotalExpensesController extends Controller
     public function index()
     {
         //get all expense accounts
-        $expenseAccounts = Account::where('type', 'expense')->get();
+        $expenseAccounts = Account::where('type', 'expense')
+            ->whereNotIn('code', [720100]) //exclude the cost of sales expense account - 720100 code
+            ->get();
 
         $total = 0;
 
