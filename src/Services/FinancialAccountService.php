@@ -66,6 +66,7 @@ class FinancialAccountService
         $Account->financial_account_category_code = $request->financial_account_category_code;
         $Account->description = $request->description;
         $Account->payment = $request->payment;
+        $Account->receipt = $request->receipt;
 
         return $Account->save();
     }
@@ -89,6 +90,8 @@ class FinancialAccountService
         $Account->type = $financialAccountType->type;
         $Account->financial_account_category_code = $request->financial_account_category_code;
         $Account->description = $request->description;
+        $Account->payment = $request->payment;
+        $Account->receipt = $request->receipt;
 
         return $Account->save();
     }

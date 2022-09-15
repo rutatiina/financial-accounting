@@ -78,7 +78,7 @@ class AccountController extends Controller
         }
 
         return [
-            'pageTitle' => 'Create financial account',
+            'pageTitle' => 'Create Financial account',
             'pageAction' => 'Create',
             'url' => '/financial-accounts',
             'attributes' => (new Account)->rgGetAttributes(),
@@ -88,6 +88,8 @@ class AccountController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
+        
         $store = FinancialAccountService::store($request);
 
         if ($store)
