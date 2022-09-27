@@ -14,7 +14,7 @@ class TotalExpensesController extends Controller
     {
         //get all expense accounts
         $expenseAccounts = Account::where('type', 'expense')
-            ->whereNotIn('code', [720100]) //exclude the cost of sales expense account - 720100 code
+            ->whereNotIn('sub_type', ['cost-of-sales', 'cost-of-goods-sold'])
             ->get();
 
         $total = 0;
