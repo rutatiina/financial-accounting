@@ -211,7 +211,7 @@ class ProfitAndLoss
         //print_r($accounts); exit;
         foreach($accounts as $key => $account)
         {
-            if (strtolower($account['type']) == 'expense')
+            if (strtolower($account['type']) == 'expense' && strtolower($account['sub_type']) != 'cost-of-sales')
             {
                 $statement['expenses'][$account['code']] = (object) $account;
             }
@@ -219,7 +219,7 @@ class ProfitAndLoss
             {
                 $statement['incomes'][$account['code']] = (object) $account;
             }
-            elseif (strtolower($account['type']) == 'cost_of_sales')
+            elseif (strtolower($account['type']) == 'expense' && strtolower($account['sub_type']) == 'cost-of-sales')
             {
                 $statement['CostOfSales'][$account['code']] = (object) $account;
             }
