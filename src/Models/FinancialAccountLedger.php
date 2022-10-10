@@ -3,12 +3,14 @@
 namespace Rutatiina\FinancialAccounting\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rutatiina\FinancialAccounting\Classes\AccountClass;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Rutatiina\Tenant\Scopes\TenantIdScope;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Rutatiina\FinancialAccounting\Classes\AccountClass;
 
 class FinancialAccountLedger extends Model
 {
+    use SoftDeletes;
     use LogsActivity;
 
     protected static $logName = 'Account';
