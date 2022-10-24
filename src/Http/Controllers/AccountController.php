@@ -192,7 +192,7 @@ class AccountController extends Controller
     {
         //$query = Account::setCurrency(Auth::user()->tenant->base_currency)->query();
         return Account::select(['code', 'name', 'type'])
-            ->whereIn('type', ['expense', 'equity']) //'liability', was remove because Account payables is a liability
+            ->whereIn('type', ['asset', 'expense', 'equity']) //'liability', was remove because Account payables is a liability
             ->where(function($query) use ($request)
             {
                 if ($request->search_value)
