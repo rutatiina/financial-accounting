@@ -2,7 +2,9 @@
 
 namespace Rutatiina\FinancialAccounting\Classes\Reports;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Rutatiina\Inventory\Models\Inventory;
 use Rutatiina\FinancialAccounting\Models\Account;
 use Rutatiina\FinancialAccounting\Models\AccountBalance;
 
@@ -88,6 +90,27 @@ class ProfitAndLoss
 
     }
 
+    private function inventoryValue($date)
+    {
+        // echo "Date: ".$date."\n";
+        //Carbon::now($date)
+        $value = 0;
+        Inventory::with('item')
+            ->select(DB::raw('*, max(date) as date'))   
+            ->whereDate('date', '<=', $date)
+            ->distinct('item_id')
+            ->orderBy('date', 'desc')
+            ->groupBy('item_id')
+            ->chunk(500, function ($records) use (&$value) {
+            foreach ($records as $record) {
+                // echo $record->item_id." [".$record->date."] @ ".$record->units_available." * ".$record->item->billing_rate."\n";
+                $value += ($record->units_available * $record->item->billing_rate);
+            }
+        });
+        // print_r($value); exit;
+        return $value;
+    }
+
     # -- Fetch all the Revenues / Incomes ---
     public function generate()
     {
@@ -99,7 +122,7 @@ class ProfitAndLoss
             'gross_profit_or_loss' => 0,
             'net_profit_or_loss' => 0,
             'total_income' => 0,
-            'total_cost_of_sales' => 0,
+            'total_cost_of_sales' => $this->inventoryValue($this->opening_date) - $this->inventoryValue($this->closing_date),// 0,
             'total_expense' => 0,
             'opening_date' => $this->opening_date,
             'closing_date' => $this->closing_date,
@@ -109,7 +132,7 @@ class ProfitAndLoss
         $this->opening_date();
 
         #Get all the Income statement account balances
-        $AccountModel = Account::select(['id', 'code', 'financial_account_category_code', 'name','type'])
+        $AccountModel = Account::select(['id', 'code', 'financial_account_category_code', 'name','type', 'sub_type'])
             ->whereHas('financial_account_category', function ($query) {
                 return $query->whereIn('type', ['revenue', 'expense']);
             })
@@ -124,6 +147,7 @@ class ProfitAndLoss
             	'financial_account_category_code' => $account->financial_account_category_code,
             	'name' => $account->name,
             	'type' => $account->financial_account_category->type,
+            	'sub_type' => $account->sub_type,
 			];
             $accounts[$account->code]['sub_accounts'] = [];
 
