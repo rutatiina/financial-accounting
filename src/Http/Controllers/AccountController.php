@@ -176,9 +176,14 @@ class AccountController extends Controller
         }
     }
 
-    public function byType($type)
+    public function byType(Request $request, $type)
     {
-        return Account::where('type', $type)->paginate(50);
+        $query = Account::query();
+        $query->where('type', $type);
+
+        if ($request->sub_type) $query->where('sub_type', $request->sub_type);
+
+        return $query->paginate(50);
     }
 
     public function isPayment()
