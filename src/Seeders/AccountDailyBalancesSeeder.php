@@ -7,11 +7,14 @@ use Rutatiina\Bill\Models\Bill;
 use Rutatiina\Sales\Models\Sales;
 use Rutatiina\POS\Models\POSOrder;
 use Rutatiina\Bill\Models\BillItem;
+use Rutatiina\Bill\Models\RecurringBill;
 use Rutatiina\Expense\Models\Expense;
 use Rutatiina\Invoice\Models\Invoice;
 use Rutatiina\DebitNote\Models\DebitNote;
 use Rutatiina\Tenant\Scopes\TenantIdScope;
 use Rutatiina\CreditNote\Models\CreditNote;
+use Rutatiina\Estimate\Models\Estimate;
+use Rutatiina\Expense\Models\RecurringExpense;
 use Rutatiina\PaymentMade\Models\PaymentMade;
 use Rutatiina\JournalEntry\Models\JournalEntry;
 use Rutatiina\PaymentReceived\Models\PaymentReceived;
@@ -19,6 +22,12 @@ use Rutatiina\RetainerInvoice\Models\RetainerInvoice;
 use Rutatiina\FinancialAccounting\Models\AccountBalance;
 use Rutatiina\FinancialAccounting\Models\AccountDailyBalance;
 use Rutatiina\FinancialAccounting\Models\FinancialAccountLedger;
+use Rutatiina\GoodsDelivered\Models\GoodsDelivered;
+use Rutatiina\GoodsReceived\Models\GoodsReceived;
+use Rutatiina\Invoice\Models\RecurringInvoice;
+use Rutatiina\PettyCash\Models\PettyCashEntry;
+use Rutatiina\PurchaseOrder\Models\PurchaseOrder;
+use Rutatiina\SalesOrder\Models\SalesOrder;
 
 //php artisan db:seed --class=\\Rutatiina\\FinancialAccounting\\Seeders\\AccountDailyBalancesSeeder
 
@@ -48,24 +57,33 @@ class AccountDailyBalancesSeeder extends Seeder
         //retainer invoice
         //sales
 
-        $classes = [
-            'bill_id' => Bill::class,
-                //CashSaleLedger::class,
-            // 'credit_note_id' => CreditNote::class,
-            // 'debit_note_id' => DebitNote::class,
-            // 'expense_id' => Expense::class,
-            // 'invoice_id' => Invoice::class,
-                // 'journal_entry_id' => JournalEntry::class,
-            // 'payment_received_id' => PaymentReceived::class,
-            // 'payment_made_id' => PaymentMade::class,
-            // 'pos_order_id' => POSOrder::class,
-            // 'retainer_invoice_id' => RetainerInvoice::class,
-            // 'sales_id' => Sales::class
+        $doubleEntryClasses = [
+            POSOrder::class,
+
+            Sales::class,
+            // Estimate::class,
+            RetainerInvoice::class,
+            // SalesOrder::class,
+            Invoice::class,
+            PaymentReceived::class,
+            CreditNote::class,
+
+            PettyCashEntry::class,
+            Expense::class,
+            // PurchaseOrder::class,
+            Bill::class,
+            PaymentMade::class,
+            DebitNote::class,
+
+            // GoodsReceived::class,
+            // GoodsDelivered::class,
+
+            JournalEntry::class,
         ];
 
-        $this->command->line('* Time to work magic');
+        $this->command->line('* Time to work magic (double entries)');
 
-        foreach($classes as $key_name => $class)
+        foreach($doubleEntryClasses as $class)
         {
             $txns = (new $class)->withoutGlobalScopes()
                 ->with(['ledgers' => function ($query) {
@@ -75,7 +93,6 @@ class AccountDailyBalancesSeeder extends Seeder
 
             foreach ($txns as $txn) 
             {
-               
                 foreach ($txn->ledgers as $ledger)
                 {
                     AccountDailyBalance::withoutGlobalScopes()
@@ -105,7 +122,6 @@ class AccountDailyBalancesSeeder extends Seeder
                             ->increment('credit', $ledger['total']);
 
                     }
-
                 }
 
                 $this->command->line('['.$txn->tenant_id.'] '.$class.'::'.$txn->id.' - Daily balances updated ');
