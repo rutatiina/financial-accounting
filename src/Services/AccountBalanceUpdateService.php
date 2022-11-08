@@ -3,6 +3,7 @@
 namespace Rutatiina\FinancialAccounting\Services;
 
 use Rutatiina\FinancialAccounting\Models\AccountBalance;
+use Rutatiina\FinancialAccounting\Models\AccountDailyBalance;
 
 class AccountBalanceUpdateService
 {
@@ -68,6 +69,14 @@ class AccountBalanceUpdateService
                     ->orderBy('date', 'desc')
                     ->first();
 
+                //2. find the record for daily balance for that date
+                AccountDailyBalance::firstOrCreate([
+                    'tenant_id' => $ledger['tenant_id'],
+                    'date' => $ledger['date'],
+                    'currency' => $currency,
+                    'financial_account_code' => $ledger['financial_account_code']
+                ]);
+
                 //var_dump($accountBalance); exit;
                 //Log::info('>>Last account balance entry for account id::'.$ledger['financial_account_code'].' in '.$currency.' date: '.$ledger['date'].': '.$ledger['effect'].' '.$ledger['total']);
                 //Log::info($ledger);
@@ -121,6 +130,11 @@ class AccountBalanceUpdateService
                     //Log::info('debit increment: '.$debit);
                     //Log::info($increment);
 
+                    AccountDailyBalance::whereDate('date', $ledger['date'])
+                        ->where('currency', $currency)
+                        ->where('financial_account_code', $ledger['financial_account_code'])
+                        ->increment('debit', $debit);
+
                 }
 
                 if ($credit)
@@ -131,6 +145,11 @@ class AccountBalanceUpdateService
                         ->increment('credit', $credit);
                     //Log::info('credit increment: '.$credit);
                     //Log::info($increment);
+
+                    AccountDailyBalance::whereDate('date', $ledger['date'])
+                        ->where('currency', $currency)
+                        ->where('financial_account_code', $ledger['financial_account_code'])
+                        ->increment('credit', $credit);
 
                 }
 
@@ -179,6 +198,14 @@ class AccountBalanceUpdateService
                 ->where('financial_account_code', $data['financial_account_code'])
                 ->orderBy('date', 'desc')
                 ->first();
+
+            //2. find the daily account daily balance record
+            AccountDailyBalance::firstOrCreate([
+                'tenant_id' => $data['tenant_id'],
+                'date' => $data['date'],
+                'currency' => $currency,
+                'financial_account_code' => $data['financial_account_code']
+            ]);
 
             //var_dump($accountBalance); exit;
             //Log::info('>>Last account balance entry for account id::'.$data['financial_account_code'].' in '.$currency.' date: '.$data['date'].': '.$data['effect'].' '.$data['total']);
@@ -229,6 +256,11 @@ class AccountBalanceUpdateService
                 ->increment('debit', $total);
             //Log::info('debit increment: '.$total);
             //Log::info($increment);
+
+            AccountDailyBalance::whereDate('date', $data['date'])
+                ->where('currency', $currency)
+                ->where('financial_account_code', $data['financial_account_code'])
+                ->increment('debit', $total);
         }
 
         return true;
