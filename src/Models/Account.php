@@ -35,6 +35,8 @@ class Account extends Model
     ];
 
     protected $casts = [
+        'code' => 'integer',
+        'financial_account_category_code' => 'integer',
         'payment' => 'integer',
         'receipt' => 'integer',
     ];
