@@ -34,6 +34,11 @@ class Account extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'payment' => 'integer',
+        'receipt' => 'integer',
+    ];
+
     protected $appends = ['balance'];
 
     protected $guarded = ['id'];
