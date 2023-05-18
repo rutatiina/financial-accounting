@@ -31,6 +31,9 @@ class SalesByItemController extends Controller
 
     public function generate(Request $request)
     {
+        $openingData = $request->opening_date ?? date('Y-m-d');
+        $closingData = $request->closing_date ?? date('Y-m-d');
+
         $total_quantity = 0;
         $total_amount = 0;
 
@@ -81,8 +84,8 @@ class SalesByItemController extends Controller
         $total_avg_rate = ($total_quantity > 0) ? ($total_amount / $total_quantity) : 0;
 
         return [
-            'opening_date' => date('Y-m-d'),
-            'closing_date' => date('Y-m-d'),
+            'opening_date' => $openingData,
+            'closing_date' => $closingData,
             'items' => $items,
             'total_quantity' => $total_quantity,
             'total_amount' => $total_amount,
