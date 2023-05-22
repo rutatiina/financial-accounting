@@ -28,6 +28,9 @@ class SalesByCustomerController extends Controller
 
     public function generate(Request $request)
 	{
+        $openingData = $request->opening_date ?? date('Y-m-d');
+        $closingData = $request->closing_date ?? date('Y-m-d');
+
         $total_invoices = 0;
         $total_sales = 0;
         $total_sales_with_tax = 0;
@@ -37,11 +40,11 @@ class SalesByCustomerController extends Controller
 		#Get contacts
         $contacts = Contact::where('types', 'like', '%customer%')->get();
 
-        #Get all revenue/income accounts
-        $revenueAccounts = Account::where('type', 'income')->pluck('id')->toArray();
+        #Get all revenue accounts
+        $revenueAccounts = Account::where('type', 'revenue')->pluck('code')->toArray();
 
-        foreach ($contacts as &$contact) {
-
+        foreach ($contacts as &$contact) 
+        {
             /*
              * -- Add the following fields to each contact --
              * $contact->invoice_count
@@ -89,8 +92,8 @@ class SalesByCustomerController extends Controller
 
         return [
         	'contacts' => $contacts,
-        	'opening_date' => date('Y-m-d'),
-        	'closing_date' => date('Y-m-d'),
+        	'opening_date' => $openingData,
+        	'closing_date' => $closingData,
         	'total_sales' => $total_sales,
         	'total_sales_with_tax' => $total_sales_with_tax,
         	'total_invoices' => $total_invoices,

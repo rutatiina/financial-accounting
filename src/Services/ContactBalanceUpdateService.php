@@ -234,8 +234,6 @@ class ContactBalanceUpdateService
 
         }
 
-
-
         return true;
 
     }

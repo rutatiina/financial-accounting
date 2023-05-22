@@ -43,7 +43,6 @@ class SalesByItemController extends Controller
 
         foreach ($items as &$item)
         {
-
             /*
              * -- Add the following fields to each contact --
              * $contact->invoice_count
