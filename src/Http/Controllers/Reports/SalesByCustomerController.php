@@ -68,6 +68,8 @@ class SalesByCustomerController extends Controller
                 ->groupBy('contact_id')
                 ->where('contact_id', $contact->id)
                 ->whereIn('financial_account_code', $revenueAccounts)
+                ->whereDate('date', '>=', $openingData)
+                ->whereDate('date', '<=', $closingData)
                 ->orderBy('date', 'desc')
                 ->first();
 
