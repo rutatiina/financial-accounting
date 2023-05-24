@@ -2,6 +2,7 @@
 
 namespace Rutatiina\FinancialAccounting\Services;
 
+use Rutatiina\Tenant\Scopes\TenantIdScope;
 use Rutatiina\FinancialAccounting\Models\AccountBalance;
 use Rutatiina\FinancialAccounting\Models\AccountDailyBalance;
 
@@ -63,95 +64,44 @@ class AccountBalanceUpdateService
                 }
 
                 //1. find the last record
-                $accountBalance = AccountBalance::whereDate('date', '<=', $ledger['date'])
-                    ->where('currency', $currency)
-                    ->where('financial_account_code', $ledger['financial_account_code'])
-                    ->orderBy('date', 'desc')
-                    ->first();
+                $accountBalance = AccountBalance::withoutGlobalScopes([TenantIdScope::class])
+                ->firstOrCreate(
+                    [
+                        'tenant_id' => $ledger['tenant_id'],
+                        'date' => $ledger['date'],
+                        'currency' => $currency,
+                        'financial_account_code' => $ledger['financial_account_code'],
+                    ],
+                    [
+                        'debit' => 0,
+                        'credit' => 0,
+                    ]
+                );
+
+                if ($debit) $accountBalance->debit += $debit;
+                if ($credit) $accountBalance->credit += $credit;
+
+                $accountBalance->save();
 
                 //2. find the record for daily balance for that date
-                AccountDailyBalance::firstOrCreate([
-                    'tenant_id' => $ledger['tenant_id'],
-                    'date' => $ledger['date'],
-                    'currency' => $currency,
-                    'financial_account_code' => $ledger['financial_account_code']
-                ]);
+                $accountDailyBalance = AccountDailyBalance::withoutGlobalScopes([TenantIdScope::class])
+                ->firstOrCreate(
+                    [
+                        'tenant_id' => $ledger['tenant_id'],
+                        'date' => $ledger['date'],
+                        'currency' => $currency,
+                        'financial_account_code' => $ledger['financial_account_code'],
+                    ],
+                    [
+                        'debit' => 0,
+                        'credit' => 0,
+                    ]
+                );
 
-                //var_dump($accountBalance); exit;
-                //Log::info('>>Last account balance entry for account id::'.$ledger['financial_account_code'].' in '.$currency.' date: '.$ledger['date'].': '.$ledger['effect'].' '.$ledger['total']);
-                //Log::info($ledger);
-                //Log::info($accountBalance);
+                if ($debit) $accountDailyBalance->debit += $debit;
+                if ($credit) $accountDailyBalance->credit += $credit;
 
-                switch ($accountBalance)
-                {
-                    case null:
-
-                        //create a new balance record
-                        $account_balance = new AccountBalance;
-                        $account_balance->tenant_id = $ledger['tenant_id'];
-                        $account_balance->date = $ledger['date'];
-                        $account_balance->financial_account_code = $ledger['financial_account_code'];
-                        $account_balance->currency = $currency;
-                        $account_balance->debit = 0;
-                        $account_balance->credit = 0;
-                        $account_balance->save();
-
-                        break;
-
-                    default:
-
-                        //create a new row with the last balances
-                        if ($ledger['date'] == $accountBalance->date)
-                        {
-                            //do nothing because the records for this dates balances already exists
-                        }
-                        else
-                        {
-                            $account_balance = new AccountBalance;
-                            $account_balance->tenant_id = $ledger['tenant_id'];
-                            $account_balance->date = $ledger['date'];
-                            $account_balance->financial_account_code = $ledger['financial_account_code'];
-                            $account_balance->currency = $currency;
-                            $account_balance->debit = $accountBalance->debit;
-                            $account_balance->credit = $accountBalance->credit;
-                            $account_balance->save();
-                        }
-
-                        break;
-
-                }
-
-                if ($debit)
-                {
-                    AccountBalance::whereDate('date', '>=', $ledger['date'])
-                        ->where('currency', $currency)
-                        ->where('financial_account_code', $ledger['financial_account_code'])
-                        ->increment('debit', $debit);
-                    //Log::info('debit increment: '.$debit);
-                    //Log::info($increment);
-
-                    AccountDailyBalance::whereDate('date', $ledger['date'])
-                        ->where('currency', $currency)
-                        ->where('financial_account_code', $ledger['financial_account_code'])
-                        ->increment('debit', $debit);
-
-                }
-
-                if ($credit)
-                {
-                    AccountBalance::whereDate('date', '>=', $ledger['date'])
-                        ->where('currency', $currency)
-                        ->where('financial_account_code', $ledger['financial_account_code'])
-                        ->increment('credit', $credit);
-                    //Log::info('credit increment: '.$credit);
-                    //Log::info($increment);
-
-                    AccountDailyBalance::whereDate('date', $ledger['date'])
-                        ->where('currency', $currency)
-                        ->where('financial_account_code', $ledger['financial_account_code'])
-                        ->increment('credit', $credit);
-
-                }
+                $accountDailyBalance->save();
 
             }
 

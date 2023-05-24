@@ -2,6 +2,7 @@
 
 namespace Rutatiina\FinancialAccounting\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Rutatiina\Tenant\Scopes\TenantIdScope;
@@ -120,12 +121,20 @@ class Account extends Model
     public function getBalanceAttribute()
     {
         $balances = AccountBalance::where('financial_account_code', $this->code)
+            ->select(
+                '*',
+                DB::raw('SUM(debit) as total_debit'),
+                DB::raw('SUM(credit) as total_credit')
+            )
             ->where('currency', self::$currency)
-            ->orderBy('date', 'desc')
+            // ->orderBy('date', 'desc')
             ->first();
 
         if ($balances)
         {
+            $balances->debit = $balances->total_debit;
+            $balances->credit = $balances->total_credit;
+
             return $balances;
         }
         else

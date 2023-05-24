@@ -2,6 +2,7 @@
 
 namespace Rutatiina\FinancialAccounting\Services;
 
+use Rutatiina\Tenant\Scopes\TenantIdScope;
 use Rutatiina\FinancialAccounting\Models\ContactBalance;
 
 class ContactBalanceUpdateService
@@ -64,77 +65,25 @@ class ContactBalanceUpdateService
                     $credit = $credit * $ledger['exchange_rate'];
                 }
 
-                //1. find the last record
-                $contactBalance = ContactBalance::where('date', '<=', $ledger['date'])
-                    //->where('tenant_id', $ledger['tenant_id']) //TenantIdScope
-                    ->where('currency', $currency)
-                    ->where('financial_account_code', $ledger['financial_account_code'])
-                    ->where('contact_id', $ledger['contact_id'])
-                    ->orderBy('date', 'DESC')
-                    ->first();
+                $contactBalance = ContactBalance::withoutGlobalScopes([TenantIdScope::class])
+                ->firstOrCreate(
+                    [
+                        'tenant_id' => $ledger['tenant_id'],
+                        'date' => $ledger['date'],
+                        'currency' => $currency,
+                        'financial_account_code' => $ledger['financial_account_code'],
+                        'contact_id' => $ledger['contact_id']
+                    ],
+                    [
+                        'debit' => 0,
+                        'credit' => 0,
+                    ]
+                );
 
-                //var_dump($contactBalance->num_rows()); exit;
+                if ($debit) $contactBalance->debit += $debit;
+                if ($credit) $contactBalance->credit += $credit;
 
-                switch ($contactBalance)
-                {
-                    case null:
-
-                        //create a new balance record
-                        $contactBalanceInsert = new ContactBalance;
-                        $contactBalanceInsert->tenant_id = $ledger['tenant_id'];
-                        $contactBalanceInsert->contact_id = $ledger['contact_id'];
-                        $contactBalanceInsert->date = $ledger['date'];
-                        $contactBalanceInsert->financial_account_code = $ledger['financial_account_code'];
-                        $contactBalanceInsert->currency = $currency;
-                        $contactBalanceInsert->debit = 0;
-                        $contactBalanceInsert->credit = 0;
-                        $contactBalanceInsert->save();
-
-                        break;
-
-                    default:
-
-                        //create a new row with the last balances
-                        if ($ledger['date'] == $contactBalance->date)
-                        {
-                            //do nothing because the records for this dates balances already exists
-                        }
-                        else
-                        {
-                            $contactBalanceInsert = new ContactBalance;
-                            $contactBalanceInsert->tenant_id = $ledger['tenant_id'];
-                            $contactBalanceInsert->contact_id = $ledger['contact_id'];
-                            $contactBalanceInsert->date = $ledger['date'];
-                            $contactBalanceInsert->financial_account_code = $ledger['financial_account_code'];
-                            $contactBalanceInsert->currency = $currency;
-                            $contactBalanceInsert->debit = $contactBalance->debit;
-                            $contactBalanceInsert->credit = $contactBalance->credit;
-                            $contactBalanceInsert->save();
-                        }
-
-                        break;
-                }
-
-                if ($debit)
-                {
-
-                    $increment = ContactBalance::where('date', '>=', $ledger['date'])
-                        ->where('currency', $currency)
-                        ->where('financial_account_code', $ledger['financial_account_code'])
-                        ->where('contact_id', $ledger['contact_id'])
-                        ->increment('debit', $debit);
-
-                }
-                elseif ($credit)
-                {
-
-                    $increment = ContactBalance::where('date', '>=', $ledger['date'])
-                        ->where('currency', $currency)
-                        ->where('financial_account_code', $ledger['financial_account_code'])
-                        ->where('contact_id', $ledger['contact_id'])
-                        ->increment('credit', $credit);
-
-                }
+                $contactBalance->save();
 
             }
 
@@ -146,7 +95,6 @@ class ContactBalanceUpdateService
 
     public static function singleEntry($data, $reverse = false)
     {
-
         //Defaults
         $total = $data['total'];
 
@@ -184,53 +132,23 @@ class ContactBalanceUpdateService
                 ->orderBy('date', 'DESC')
                 ->first();
 
-            //var_dump($contactBalance->num_rows()); exit;
+            $contactBalance = ContactBalance::withoutGlobalScopes([TenantIdScope::class])
+            ->firstOrCreate(
+                [
+                    'tenant_id' => $data['tenant_id'],
+                    'date' => $data['date'],
+                    'currency' => $currency,
+                    'financial_account_code' => $data['financial_account_code'],
+                    'contact_id' => $data['contact_id']
+                ],
+                [
+                    'debit' => 0,
+                    'credit' => 0,
+                ]
+            );
 
-            switch ($contactBalance)
-            {
-                case null:
-
-                    //create a new balance record
-                    $contactBalanceInsert = new ContactBalance;
-                    $contactBalanceInsert->tenant_id = $data['tenant_id'];
-                    $contactBalanceInsert->contact_id = $data['contact_id'];
-                    $contactBalanceInsert->date = $data['date'];
-                    $contactBalanceInsert->financial_account_code = $data['financial_account_code'];
-                    $contactBalanceInsert->currency = $currency;
-                    $contactBalanceInsert->debit = 0;
-                    $contactBalanceInsert->credit = 0;
-                    $contactBalanceInsert->save();
-
-                    break;
-
-                default:
-
-                    //create a new row with the last balances
-                    if ($data['date'] == $contactBalance->date)
-                    {
-                        //do nothing because the records for this dates balances already exists
-                    }
-                    else
-                    {
-                        $contactBalanceInsert = new ContactBalance;
-                        $contactBalanceInsert->tenant_id = $data['tenant_id'];
-                        $contactBalanceInsert->contact_id = $data['contact_id'];
-                        $contactBalanceInsert->date = $data['date'];
-                        $contactBalanceInsert->financial_account_code = $data['financial_account_code'];
-                        $contactBalanceInsert->currency = $currency;
-                        $contactBalanceInsert->debit = $contactBalance->debit;
-                        $contactBalanceInsert->credit = $contactBalance->credit;
-                        $contactBalanceInsert->save();
-                    }
-
-                    break;
-            }
-
-            ContactBalance::where('date', '>=', $data['date'])
-                ->where('currency', $currency)
-                ->where('financial_account_code', $data['financial_account_code'])
-                ->where('contact_id', $data['contact_id'])
-                ->increment('debit', $total);
+            $contactBalance->debit += $total;
+            $contactBalance->save();
 
         }
 

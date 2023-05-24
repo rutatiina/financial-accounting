@@ -2,6 +2,7 @@
 
 namespace Rutatiina\FinancialAccounting\Services;
 
+use Rutatiina\Tenant\Scopes\TenantIdScope;
 use Rutatiina\FinancialAccounting\Models\ItemBalance;
 use Rutatiina\FinancialAccounting\Models\AccountBalance;
 
@@ -54,15 +55,16 @@ class ItemBalanceUpdateService
             $credit = ($item['effect'] == 'credit') ? $item['total'] : 0;
 
             $currencies = [];
-            $currencies[$data['base_currency']] = $data['base_currency'];
-            $currencies[$data['quote_currency']] = $data['quote_currency'];
+            if (isset($data['currency'])) $currencies[$data['currency']] = $data['currency']; //eg POS entires only have currency and not base / quote currency
+            if (isset($data['quote_currency'])) $currencies[$data['quote_currency']] = $data['quote_currency'];
+            if (isset($data['quote_currency'])) $currencies[$data['quote_currency']] = $data['quote_currency'];
 
             foreach ($currencies as $currency)
             {
                 //for multi-currency, apply the exchange rate
-                if ($currency == $data['base_currency'])
+                if ($currency == $data['base_currency'] || $data['currency'])
                 {
-                    //Do nothing because the values are in the base currency
+                    //Do nothing because the values are in the base currency OR txn has currency value only like POS
                 }
                 else
                 {
@@ -70,9 +72,10 @@ class ItemBalanceUpdateService
                     $credit = $credit * $item['exchange_rate'];
                 }
 
-                $itemBalance = ItemBalance::firstOrCreate(
+                $itemBalance = ItemBalance::withoutGlobalScopes([TenantIdScope::class])
+                ->firstOrCreate(
                     [
-                        'tenant_id' => session('tenant_id'),
+                        'tenant_id' => $data['tenant_id'],
                         'date' => $data['date'],
                         'currency' => $currency,
                         'financial_account_code' => $item['financial_account_code'],
