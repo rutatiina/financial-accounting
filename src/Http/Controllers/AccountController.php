@@ -62,6 +62,11 @@ class AccountController extends Controller
             });
         }
 
+        if ($request->account_with_balances)
+        {
+            $query->has('balances');
+        }
+
         $AccountPaginate = $query->paginate(20);
 
         return [

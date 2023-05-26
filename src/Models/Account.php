@@ -118,6 +118,11 @@ class Account extends Model
         return $attributes;
     }
 
+    public function balances()
+    {
+        return $this->hasMany('Rutatiina\FinancialAccounting\Models\AccountBalance', 'financial_account_code', 'code');
+    }
+
     public function getBalanceAttribute()
     {
         $balances = AccountBalance::where('financial_account_code', $this->code)
