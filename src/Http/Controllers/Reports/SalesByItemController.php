@@ -141,7 +141,7 @@ class SalesByItemController extends Controller
                 ->where('item_id', $item->id)
                 ->groupBy('item_id', 'tenant_id')
                 ->first();
-            $item->avg_rate = $averageRate->avg_rate;
+            $item->avg_rate = $averageRate->avg_rate ?? 0;
 
             if ($salesBalances)
             {
