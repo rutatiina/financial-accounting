@@ -9,6 +9,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Rutatiina\Contact\Models\Contact;
 use Rutatiina\Sales\Models\SalesItem;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\LazyCollection;
+use Rutatiina\POS\Models\POSOrderItem;
+use Illuminate\Database\Schema\Blueprint;
 use Rutatiina\Invoice\Models\InvoiceItem;
 use Rutatiina\FinancialAccounting\Models\Account;
 use Rutatiina\FinancialAccounting\Models\ItemBalance;
@@ -66,15 +70,74 @@ class SalesByItemController extends Controller
 
             //return $salesBalances;
 
-            //get the AVERAGE PRICE
-            $averageRate = SalesItem::select('item_id', DB::raw('AVG(rate) as avg_rate'))
+
+            $itemRowsTempTableName = 'item_'.$item->id.'_rows';
+            Schema::create($itemRowsTempTableName, function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('tenant_id');
+                $table->integer('item_id');
+                $table->unsignedDecimal('rate', 20,5);
+                $table->temporary();
+            });
+
+            SalesItem::select('tenant_id', 'item_id', 'rate')
+            ->where('item_id', $item->id)
+            ->whereIn('credit_financial_account_code', $revenueAccounts)
+            ->whereHas('sale', function ($query) use ($openingDate, $closingDate) {
+                $query->whereDate('date', '>=', $openingDate);
+                $query->whereDate('date', '<=', $closingDate);
+            })
+            ->chunk(500, function ($rows) use ($itemRowsTempTableName)
+            {
+                $sql = '';
+                foreach ($rows as $row) 
+                {
+                    $sql .= "('".implode("','", $row->toArray())."'),";
+                }
+                $sql = rtrim($sql, ',');
+                DB::insert(DB::raw("INSERT INTO {$itemRowsTempTableName}(tenant_id, item_id, rate) VALUES {$sql}"));
+            });
+
+            InvoiceItem::select('tenant_id', 'item_id', 'rate')
+            ->where('item_id', $item->id)
+            ->whereIn('credit_financial_account_code', $revenueAccounts)
+            ->whereHas('invoice', function ($query) use ($openingDate, $closingDate) {
+                $query->whereDate('date', '>=', $openingDate);
+                $query->whereDate('date', '<=', $closingDate);
+            })
+            ->chunk(500, function ($rows) use ($itemRowsTempTableName)
+            {
+                $sql = '';
+                foreach ($rows as $row) 
+                {
+                    $sql .= "('".implode("','", $row->toArray())."'),";
+                }
+                $sql = rtrim($sql, ',');
+                DB::insert(DB::raw("INSERT INTO {$itemRowsTempTableName}(tenant_id, item_id, rate) VALUES {$sql}"));
+            });
+
+            POSOrderItem::select('tenant_id', 'item_id', 'rate')
+            ->where('item_id', $item->id)
+            ->whereIn('credit_financial_account_code', $revenueAccounts)
+            ->whereHas('pos_order', function ($query) use ($openingDate, $closingDate) {
+                $query->whereDate('date', '>=', $openingDate);
+                $query->whereDate('date', '<=', $closingDate);
+            })
+            ->chunk(500, function ($rows) use ($itemRowsTempTableName)
+            {
+                $sql = '';
+                foreach ($rows as $row) 
+                {
+                    $sql .= "('".implode("','", $row->toArray())."'),";
+                }
+                $sql = rtrim($sql, ',');
+                DB::insert(DB::raw("INSERT INTO {$itemRowsTempTableName}(tenant_id, item_id, rate) VALUES {$sql}"));
+            });
+        
+            // return  DB::table($itemRowsTempTableName)->get();
+
+            $averageRate = DB::table($itemRowsTempTableName)->select('tenant_id', 'item_id', DB::raw('AVG(rate) as avg_rate'))
                 ->where('item_id', $item->id)
-                ->whereIn('credit_financial_account_code', $revenueAccounts)
-                ->whereHas('sale', function ($query) use ($openingDate, $closingDate) {
-                    $query->whereDate('date', '>=', $openingDate);
-                    $query->whereDate('date', '<=', $closingDate);
-                })
-                // ->groupBy('item_id')
                 ->first();
             $item->avg_rate = $averageRate->avg_rate;
 
@@ -91,6 +154,8 @@ class SalesByItemController extends Controller
                 $item->total_quantity = 0;
                 $item->total_total = 0;
             }
+
+            Schema::drop($itemRowsTempTableName);
 
         }
 
