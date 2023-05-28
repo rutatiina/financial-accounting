@@ -136,8 +136,10 @@ class SalesByItemController extends Controller
         
             // return  DB::table($itemRowsTempTableName)->get();
 
-            $averageRate = DB::table($itemRowsTempTableName)->select('tenant_id', 'item_id', DB::raw('AVG(rate) as avg_rate'))
+            $averageRate = DB::table($itemRowsTempTableName)
+                ->select('tenant_id', 'item_id', DB::raw('AVG(rate) as avg_rate'))
                 ->where('item_id', $item->id)
+                ->groupBy('item_id')
                 ->first();
             $item->avg_rate = $averageRate->avg_rate;
 
