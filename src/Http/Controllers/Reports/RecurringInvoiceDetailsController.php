@@ -3,8 +3,8 @@
 namespace Rutatiina\FinancialAccounting\Http\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
+use Rutatiina\Invoice\Models\RecurringInvoice;
 use Illuminate\Support\Facades\Request as FacadesRequest;
-use Rutatiina\Invoice\Models\InvoiceRecurring;
 
 class RecurringInvoiceDetailsController extends Controller
 {
@@ -24,7 +24,7 @@ class RecurringInvoiceDetailsController extends Controller
         //$tenant = Auth::user()->tenant;
 
         //recurring-invoice
-        $invoices = InvoiceRecurring::with('recurring')
+        $invoices = RecurringInvoice::with('recurring')
             //->where('base_currency', $tenant->base_currency)
             ->latest('date')
             ->paginate();

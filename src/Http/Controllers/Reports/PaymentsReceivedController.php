@@ -5,7 +5,7 @@ namespace Rutatiina\FinancialAccounting\Http\Controllers\Reports;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request as FacadesRequest;
-use Rutatiina\Receipt\Models\Receipt;
+use Rutatiina\PaymentReceived\Models\PaymentReceived;
 
 class PaymentsReceivedController extends Controller
 {
@@ -27,7 +27,7 @@ class PaymentsReceivedController extends Controller
         //payment-voucher
         //where('txn_type_id', 5)
         //->where('base_currency', $tenant->base_currency)
-        $invoices = Receipt::latest('date')
+        $invoices = PaymentReceived::latest('date')
             ->paginate();
 
         return [
