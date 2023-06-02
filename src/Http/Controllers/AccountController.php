@@ -33,41 +33,41 @@ class AccountController extends Controller
             return view('ui.limitless::layout_2-ltr-default.appVue');
         }
 
+        $paginate = 20;
+
         $query = Account::setCurrency(Auth::user()->tenant->base_currency)->query();
         $query->with('financial_account_category');
         $query->orderBy('name', 'asc');
 
-        /*
-        if ($request->search_value)
-        {
-            //$request->except(['page']);
-            //$request->only(['search_value']);
-            $request->request->remove('page');
-            //return $request->all();
-
-            //$query->where('name', 'like', '%'.$request->search_value.'%');
-        }
-        //*/
-
         if ($request->search)
         {
+            $paginate = Account::count();
             $request->request->remove('page');
 
             $query->where(function($q) use ($request) {
                 $columns = (new Account)->getSearchableColumns();
                 foreach($columns as $column)
                 {
-                    $q->orWhere($column, 'like', '%'.Str::replace(' ', '%', $request->search).'%');
+                    // $q->orWhere($column, 'like', '%'.Str::replace(' ', '%', $request->search).'%');
                 }
+
+                $q->orWhereHas('financial_account_category', function ($qq) use ($request) {
+                    $qq->where('title', 'like', '%'.Str::replace(' ', '%', $request->search).'%');
+                    // return $query->where(function($q) use ($request) {});
+                    $qq->orWhere('category_name', 'like', '%'.Str::replace(' ', '%', $request->search).'%');
+                    $qq->orWhere('description', 'like', '%'.Str::replace(' ', '%', $request->search).'%');
+                });
             });
         }
 
-        if ($request->account_with_balances)
+        if ($request->account_with_balances && $request->account_with_balances != 'false')
         {
             $query->has('balances');
         }
 
-        $AccountPaginate = $query->paginate(20);
+        // return $query->toSql();
+
+        $AccountPaginate = $query->paginate($paginate);
 
         return [
             'tableData' => $AccountPaginate
