@@ -37,6 +37,10 @@ class CreateRgAccountingAccountsTable extends Migration
             $table->unsignedTinyInteger('payment')->default(0)->nullable(); //todo this field is to be removed
             $table->unsignedBigInteger('bank_account_id')->nullable(); //todo this field is to be removed
 
+            //cash flow statement 
+            $table->boolean('cash_flow_cash_and_cash_equivalent')->nullable();
+            $table->string('cash_flow_activity')->nullable();
+
             //indexes
             $table->index(['tenant_id', 'code'], 'tenant_index');
             $table->unique(['tenant_id', 'code'], 'tenant_unique');

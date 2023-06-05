@@ -67,6 +67,8 @@ class FinancialAccountService
         $Account->description = $request->description;
         $Account->payment = $request->payment;
         $Account->receipt = $request->receipt;
+        $Account->cash_flow_cash_and_cash_equivalent = $request->cash_flow_cash_and_cash_equivalent;
+        $Account->cash_flow_activity = $request->cash_flow_activity;
 
         return $Account->save();
     }
@@ -92,6 +94,8 @@ class FinancialAccountService
         $Account->description = $request->description;
         $Account->payment = $request->payment;
         $Account->receipt = $request->receipt;
+        $Account->cash_flow_cash_and_cash_equivalent = $request->cash_flow_cash_and_cash_equivalent;
+        $Account->cash_flow_activity = $request->cash_flow_activity;
 
         return $Account->save();
     }
