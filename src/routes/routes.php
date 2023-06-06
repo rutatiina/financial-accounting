@@ -67,6 +67,16 @@ Route::group(['middleware' => ['web', 'auth', 'tenant', 'service.accounting']], 
 		Route::post('reports/balance-sheet', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\BalanceSheetController@generate')->name('accounting.reports.balance-sheet.generate');
         #<< balance-sheet
 
+		#>> cash-flow-statement
+		Route::get('reports/cash-flow-statement', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\BalanceSheetController@index')->name('accounting.reports.cash-flow-statement.index');
+		Route::post('reports/cash-flow-statement', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\BalanceSheetController@generate')->name('accounting.reports.cash-flow-statement.generate');
+        #<< cash-flow-statement
+
+		#>> customer-balances
+		Route::get('reports/customer-balances', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\SalesByCustomerController@index')->name('accounting.reports.customer-balances.index');
+		Route::post('reports/customer-balances', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\SalesByCustomerController@generate')->name('accounting.reports.customer-balances.generate');
+        #<< sales-by-customer
+
 		#>> sales-by-customer
 		Route::get('reports/sales-by-customer', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\SalesByCustomerController@index')->name('accounting.reports.sales-by-customer.index');
 		Route::post('reports/sales-by-customer', 'Rutatiina\FinancialAccounting\Http\Controllers\Reports\SalesByCustomerController@generate')->name('accounting.reports.sales-by-customer.generate');
